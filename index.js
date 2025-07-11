@@ -10,7 +10,9 @@ const passport = require('passport');
 const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+require('dotenv').config(); 
 
 app.engine('ejs', ejsMate);
 
@@ -44,7 +46,7 @@ main()
 .catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://127.0.0.1:27017/jjfashion');
+  await mongoose.connect(process.env.DB_URL);
 
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
