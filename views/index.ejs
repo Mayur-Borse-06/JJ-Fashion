@@ -1,0 +1,50 @@
+<% layout('./layouts/boilerplate.ejs') %>
+
+    <section class="hero">
+      <h2>Trendy Clothes, Best Prices!</h2>
+      <p>Explore our latest collection of fashion wear</p>
+    </section>
+
+    <section class="products">
+      <h3 style="text-align: center;">You might Like</h3>
+      <br>
+      <div class="product-list">
+        <% for(product of products) { %>
+        <div class="product-card">
+          <a href="/product/<%= product._id %>">
+            <img src="<%= product.images %>" alt="Product" />
+            <h4><%= product.name %></h4>
+            <p><%= product.description %></p>
+            <p><%= product.price.toLocaleString("en-IN", {style: "currency", currency: "INR"}) %></p>
+            <p>Category: <%= product.category %></p>
+            <button>Add to Cart</button>
+          </a>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+    <section class="products">
+      <h3 style="text-align: center;">You might Like</h3>
+      <br>
+      <div class="product-list">
+        <% for(product of products) { %>
+        <div class="product-card">
+          <a href="/product/<%= product._id %>">
+            <img src="<%= product.images %>" alt="Product" />
+            <h4><%= product.name %></h4>
+            <p><%= product.description %></p>
+            <p><%= product.price.toLocaleString("en-IN", {style: "currency", currency: "INR"}) %></p>
+            <p>Category: <%= product.category %></p>
+            <button>Add to Cart</button>
+          </a>
+        </div>
+        <% } %>
+      </div>
+    </section>
+
+  <a href="https://wa.me/918401809966?text=Hello%2C%20I%20am%20interested%20in%20your%20services" 
+   target="_blank">
+    <img src="https://img.icons8.com/color/48/000000/whatsapp--v1.png" alt="Chat on WhatsApp" />
+  </a>
+

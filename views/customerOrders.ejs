@@ -1,0 +1,39 @@
+<% layout('./layouts/boilerplate.ejs') %>
+    <% for(order of orders) {%>
+    <div
+      class="card mt-3"
+      style="width: 90%; margin-left: 5%; margin-right: 5%"
+    >
+      <div class="row">
+        <div class="col-2">
+          <img
+            src="<%= order.product.images %>"
+            class="card-img-top"
+            alt="..."
+            style="height: 14rem"
+          />
+        </div>
+        <div class="col-6">
+          <div class="card-body">
+            <h5 class="card-title">
+              Order placed on: <%= order.orderedAt.toLocaleDateString('en-US', {
+              month: 'short', day: '2-digit', year: 'numeric' }) %>
+            </h5>
+            <br />
+            <h5 class="card-subtitle text-body-secondary">
+              <%= order.product.name %>
+            </h5>
+            <br />
+            <ul>
+              <li>
+                Price: <%= order.product.price.toLocaleString("en-IN", {style:
+                "currency",currency: "INR"}) %>
+              </li>
+              <li>Quantity: <%= order.quantity %></li>
+              <li>Color: <%= order.product.color %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>

@@ -1,0 +1,104 @@
+<% layout('./layouts/boilerplate.ejs') %>
+<body>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-6 text-center">
+        <img
+          style="height: 33rem; width: 24rem"
+          src="<%= product.images %>"
+          alt="product"
+          class="card-img-top"
+        />
+      </div>
+      <div class="col-md-6">
+        <div class="card" style="width: 24rem">
+          <div class="card-body">
+            <h5 class="card-title"><%= product.name %></h5>
+            <br />
+            <h6 class="card-subtitle mb-2 text-body-secondary">
+              category: <%= product.category %>
+            </h6>
+            <p class="card-text text-start">colors: <%= product.color %></p>
+            <p class="card-text"><%= product.description %></p>
+            <div class="row">
+              <div class="col-6">
+                <p class="card-text">
+                  <%= product.price.toLocaleString("en-IN", {style:
+                  "currency",currency: "INR"}) %>
+                </p>
+              </div>
+              <div class="col-6">
+                <p class="card-text">(<%= product.discount %>% off)</p>
+              </div>
+            </div>
+            <br />
+            <form action="/product/<%= product._id %>/buy" method="post">
+              <div class="d-flex justify-content-start">
+                <div class="row">
+                  <div class="col-4">
+                    <button class="btn btn-outline-secondary" type="button" id="decreaseBtn">−</button>
+                  </div>
+                  <div class="col-4">
+                    <input type="number" name="quantity" id="quantityInput" class="form-control text-center" value="1" min="1">
+                  </div>
+                  <div class="col-4">
+                    <button class="btn btn-outline-secondary" type="button" id="increaseBtn">+</button>
+                  </div>
+                </div>
+              </div>
+
+
+              <button>Buy Now</button>
+            </form>
+            <br />
+            <form action="/cart/<%= product._id %>/add" method="post" >
+              <input type="hidden" name="quantity" id="cartQuantityInput">
+              <button class="cart">Add to cart</button>
+            </form>
+            <br /><br />
+            <h4>Product Details</h4>
+            <ul>
+              <li class="card-text">color: <%= product.color %></li>
+              <li class="card-text">Sizes: <%= product.sizes %></li>
+              <li class="card-text">Stock: <%= product.stock %></li>
+              <li class="card-text">Product code: <%= product._id %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr />
+
+    <div class="row">
+      <section class="products">
+        <h3 style="text-align: center">You might Like</h3>
+        <br />
+        <div class="product-list">
+          <% for(product of relProducts) { %>
+          <div class="product-card">
+            <a href="/product/<%= product._id %>">
+              <img src="<%= product.images %>" alt="Product" />
+              <h4><%= product.name %></h4>
+              <p><%= product.description %></p>
+              <p>
+                <%= product.price.toLocaleString("en-IN", {style: "currency",
+                currency: "INR"}) %>
+              </p>
+              <p>Category: <%= product.category %></p>
+              <button>Add to Cart</button>
+            </a>
+          </div>
+          <% } %>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.7/js/bootstrap.min.js"
+    integrity="sha512-zKeerWHHuP3ar7kX2WKBSENzb+GJytFSBL6HrR2nPSR1kOX1qjm+oHooQtbDpDBSITgyl7QXZApvDfDWvKjkUw=="
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  ></script>
+</body>

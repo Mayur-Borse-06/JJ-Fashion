@@ -1,0 +1,37 @@
+<% layout('./layouts/boilerplate.ejs') %>
+    <% for(cartItem of cartItems) {%>
+    <div
+      class="card mt-3"
+      style="width: 90%; margin-left: 5%; margin-right: 5%"
+    >
+      <div class="row">
+        <div class="col-2">
+          <img
+            src="<%= cartItem.product.images %>"
+            class="card-img-top"
+            alt="..."
+            style="height: 14rem"
+          />
+        </div>
+        <div class="col-6">
+          <div class="card-body">
+            <br />
+            <h5 class="card-subtitle text-body-secondary">
+              <%= cartItem.product.name %>
+            </h5>
+            <br />
+            <ul>
+              <li>
+                Price: <%= cartItem.product.price.toLocaleString("en-IN", {style:
+                "currency",currency: "INR"}) %>
+              </li>
+              <li>Quantity: <%= cartItem.quantity %></li>
+              <li>Color: <%= cartItem.product.color %></li>
+              <li>Total Amount: <%= (cartItem.product.price * cartItem.quantity).toLocaleString("en-IN", {style:
+                "currency",currency: "INR"})  %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <% } %>

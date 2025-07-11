@@ -1,0 +1,16 @@
+    <header>
+      <h1>JJ Fashion</h1>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="#">Shop</a></li>
+          <% if(!currentUser) { %>
+            <li><a href="/customer/login">Login</a></li>
+            <% } else { %>
+              <li><a href="/orders">Orders</a></li>
+              <li><a href="/customer/logout">Logout</a></li>
+              <% } %>
+           <li><a href="/customer/cart"><i class="fa-solid fa-cart-shopping" style="color: rgb(235, 235, 235);"></i></a></li>
+        </ul>
+      </nav>
+    </header>
