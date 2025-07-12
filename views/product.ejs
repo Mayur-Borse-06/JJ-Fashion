@@ -77,7 +77,7 @@
         <div class="product-list">
           <% for(product of relProducts) { %>
           <div class="product-card">
-            <a href="/product/<%= product._id %>">
+            <a href="/product/<%= product._id %>" style="text-decoration: none; color: #000;">
               <img src="<%= product.images %>" alt="Product" />
               <h4><%= product.name %></h4>
               <p><%= product.description %></p>

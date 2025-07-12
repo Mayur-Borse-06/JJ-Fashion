@@ -187,6 +187,13 @@ app.get("/customer/cart", async(req, res) => {
 
 })
 
+// Admin pannel
+
+app.get("/admin/products", async(req, res) => {
+  const products = await Product.find({});
+  res.render("admin/show.ejs", {products});
+})
+
 
 
 

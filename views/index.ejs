@@ -14,11 +14,14 @@
           <a href="/product/<%= product._id %>">
             <img src="<%= product.images %>" alt="Product" />
             <h4><%= product.name %></h4>
+          </a>
             <p><%= product.description %></p>
             <p><%= product.price.toLocaleString("en-IN", {style: "currency", currency: "INR"}) %></p>
             <p>Category: <%= product.category %></p>
-            <button>Add to Cart</button>
-          </a>
+               <form action="/cart/<%= product._id %>/add" method="post" >
+              <input type="hidden" name="quantity" id="cartQuantityInput" value="1">
+              <button class="cart">Add to cart</button>
+            </form>
         </div>
         <% } %>
       </div>

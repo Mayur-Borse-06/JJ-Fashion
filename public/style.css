@@ -228,3 +228,9 @@ p {
   text-align: center;
 }
 
+/* card anchor tag color change */
+
+.product-card a {
+  text-decoration: none;
+  color: inherit;
+}
