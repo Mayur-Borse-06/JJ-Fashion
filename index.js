@@ -96,7 +96,11 @@ app.post("/customer/signup", async(req, res) => {
   const user = new Customer({name, email, address});
   const regCustomer = await Customer.register(user, password);
 
-  req.logIn(regCustomer);
+  req.logIn(regCustomer, (err) => {
+    if(err) {
+      return res.status(500).send("Error occured after registration");
+    }
+  });
   res.redirect("/");
 })
 
