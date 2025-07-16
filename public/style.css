@@ -33,7 +33,8 @@ nav a {
 .hero {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
-  background: url('https://via.placeholder.com/1200x400') no-repeat center center/cover;
+  /* background: url('https://via.placeholder.com/1200x400') no-repeat center center/cover; */
+background-image: url();
   color: white;
   text-align: center;
   padding: 4rem 2rem;
@@ -234,3 +235,8 @@ p {
   text-decoration: none;
   color: inherit;
 }
+
+
+/* form .editbtn {
+  background-color: #dc3545;
+} */

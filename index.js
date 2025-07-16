@@ -57,6 +57,16 @@ app.use((req, res, next) => {
   next();
 })
 
+// Custom middlewares
+
+const isAdmin = (req, res, next) => {
+  if(req.isAuthenticated() && req.user.isAdmin) {
+    return next();
+  } else {
+    res.status(401).send("Unauthorized access");
+  }
+}
+
 //Home page
 
 app.get("/", async(req, res) => {
@@ -189,10 +199,21 @@ app.get("/customer/cart", async(req, res) => {
 
 // Admin pannel
 
-app.get("/admin/products", async(req, res) => {
+app.get("/admin/products", isAdmin, async(req, res) => {
   const products = await Product.find({});
   res.render("admin/show.ejs", {products});
 })
+
+app.get("/admin/products/new", isAdmin, (req, res) => {
+  res.render("admin/new.ejs")
+})
+
+app.post("/admin/products", isAdmin, async (req, res) => {
+  const newProduct = new Product(req.body);
+  await newProduct.save();
+  res.redirect("/admin/products");
+})
+
 
 
 
