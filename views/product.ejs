@@ -32,6 +32,7 @@
               </div>
             </div>
             <br />
+           <% if (currentUser && !currentUser.isAdmin ) { %>
             <form action="/product/<%= product._id %>/buy" method="post">
               <div class="d-flex justify-content-start">
                 <div class="row">
@@ -55,6 +56,14 @@
               <input type="hidden" name="quantity" id="cartQuantityInput">
               <button class="cart">Add to cart</button>
             </form>
+          <% } %>
+          <%if (!currentUser) { %>
+            <form action="/customer/login">
+              <button>Login to Buy</button>
+              <br><br>
+              <button>Login to Add to Cart</button>
+            </form>
+          <% } %>
             <br /><br />
             <h4>Product Details</h4>
             <ul>
@@ -72,7 +81,11 @@
 
     <div class="row">
       <section class="products">
-        <h3 style="text-align: center">You might Like</h3>
+        <% if (currentUser && currentUser.isAdmin) { %>
+          <h3 style="text-align: center">Related Products</h3>
+        <% } else { %>
+          <h3 style="text-align: center">You might Like</h3>
+        <% } %>
         <br />
         <div class="product-list">
           <% for(product of relProducts) { %>

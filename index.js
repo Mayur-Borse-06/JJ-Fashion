@@ -9,6 +9,8 @@ const session = require('express-session');
 const passport = require('passport');
 const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
+const methodOverride = require('method-override');
+const { nextTick } = require('process');
 
 const port = process.env.PORT || 3000;
 
@@ -21,6 +23,8 @@ app.set("views", path.join(__dirname, "views"));
 
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({extended: true}));
+
+app.use(methodOverride('_method'));
 
 app.use(session({
   secret: 'anyrandomsecret', // isse secure rakhna .env mein later
@@ -81,9 +85,14 @@ app.get("/customer/login", (req, res) => {
 })
 
 app.post("/customer/login", passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/customer/login"
-}))
+  failureRedirect: "/customer/login",
+}), (req, res) => {
+  if(req.user.isAdmin) {
+    res.redirect("/admin/products");
+  } else {
+    res.redirect("/");
+  }
+})
 
 app.get("/customer/logout", (req, res) => {
   req.logOut((err) => {
@@ -204,6 +213,8 @@ app.get("/admin/products", isAdmin, async(req, res) => {
   res.render("admin/show.ejs", {products});
 })
 
+//New Product
+
 app.get("/admin/products/new", isAdmin, (req, res) => {
   res.render("admin/new.ejs")
 })
@@ -214,6 +225,39 @@ app.post("/admin/products", isAdmin, async (req, res) => {
   res.redirect("/admin/products");
 })
 
+//Delete Product
+
+app.delete("/admin/product/:id", isAdmin, async(req, res) => {
+  let {id} = req.params;
+  const delProd = await Product.findByIdAndDelete(id);
+  console.log(delProd);
+  res.redirect("/admin/products");
+})
+
+// Edit Product
+
+app.get("/admin/product/:id/edit", async(req, res) => {
+  let {id} = req.params;
+  const product = await Product.findById(id);
+  res.render("admin/edit.ejs", { product });
+})
+
+app.patch("/admin/product/:id", async(req, res) => {
+  let {id} = req.params;
+  const updatedProduct = await Product.findByIdAndUpdate(id, {
+    name: req.body.name,
+    price: req.body.price,
+    stock: req.body.stock,
+    discount: req.body.discount,
+    sizes: req.body.sizes,
+    category: req.body.category,
+    description: req.body.description,
+    images: req.body.images,
+    color: req.body.color,
+  });
+  console.log(updatedProduct);
+  res.redirect("/admin/products");
+})
 
 
 
