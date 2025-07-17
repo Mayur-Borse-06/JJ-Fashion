@@ -1,0 +1,85 @@
+<% layout('./layouts/adminboilerplate.ejs') %>
+
+
+
+
+  <!-- Main Content -->
+
+    <div class="d-flex flex-wrap gap-4 justify-content-center">
+      <div class="card" style="width: 10rem">
+        <div class="card-body text-center">
+          <h5 class="card-title"><i class="fa-solid fa-indian-rupee-sign"></i></h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary fw-bold py-1">Today's Sales</h6>
+          <p class="card-text fs-5">
+            <%= totalSales.toLocaleString("en-IN", {style: "currency", currency: "INR"}) %>
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="width: 10rem">
+        <div class="card-body text-center">
+          <h5 class="card-title"><i class="fa-solid fa-clipboard-list"></i></h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary fw-bold py-1">Total Orders</h6>
+          <p class="card-text fs-5">
+            <%= totalOrders %>
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="width: 10rem">
+        <div class="card-body text-center">
+          <h5 class="card-title"><i class="fa-solid fa-hourglass-end"></i></h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary fw-bold py-1">Pending Orders</h6>
+          <p class="card-text fs-5">
+            <%= pendingOrders %>
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="width: 10rem">
+        <div class="card-body text-center">
+          <h5 class="card-title"><i class="fa-solid fa-recycle"></i></h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary fw-bold py-1">Processing Orders</h6>
+          <p class="card-text fs-5">
+            <%= processingOrders %>
+          </p>
+        </div>
+      </div>
+
+      <div class="card" style="width: 10rem">
+        <div class="card-body text-center">
+          <h5 class="card-title"><i class="fa-solid fa-truck"></i></h5>
+          <h6 class="card-subtitle mb-2 text-body-secondary fw-bold py-1">Delivered Orders</h6>
+          <p class="card-text fs-5">
+            <%= deliveredOrders %>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+    <h3>Recent Orders</h3>
+    <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Order Id</th>
+      <th scope="col">Customer</th>
+      <th scope="col">Total</th>
+      <th scope="col">Status</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(recentOrder of recentOrders) { %>
+    <tr>
+      <th scope="row"><%= recentOrder._id %></th>
+      <td><%= recentOrder.customer.name %></td>
+      <td><%= recentOrder.totalAmount %></td>
+      <td><%= recentOrder.status %></td>
+      <td><button>Accept</button></td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+
+

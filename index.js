@@ -10,7 +10,6 @@ const passport = require('passport');
 const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
-const { nextTick } = require('process');
 
 const port = process.env.PORT || 3000;
 
@@ -208,15 +207,34 @@ app.get("/customer/cart", async(req, res) => {
 
 // Admin pannel
 
+// Main dashboard
+
+app.get("/admin/dashboard", async(req, res) => {
+  const orders = await Order.find({});
+  const totalSales = orders.reduce((acc, order) => acc + order.totalAmount, 0);
+  const totalOrders = await Order.countDocuments();
+  const pendingOrders = await Order.countDocuments({status: {$in: ["Placed"]} })
+  const processingOrders = await Order.countDocuments({status: {$in: ["Shipped", "Processing"]}});
+  const deliveredOrders = await Order.countDocuments({status: {$in: ["Delivered"]}});
+
+  const recentOrders = await Order.find({})
+    .sort({orderedAt: -1}) // Descending time(latest order time)
+    .limit(5)
+    .populate("customer")
+
+  res.render("admin/dashboard.ejs", { totalSales, totalOrders, pendingOrders, processingOrders, deliveredOrders, recentOrders });
+})
+
+// Products show page
 app.get("/admin/products", isAdmin, async(req, res) => {
   const products = await Product.find({});
-  res.render("admin/show.ejs", {products});
+  res.render("admin/products/show.ejs", {products});
 })
 
 //New Product
 
 app.get("/admin/products/new", isAdmin, (req, res) => {
-  res.render("admin/new.ejs")
+  res.render("admin/products/new.ejs")
 })
 
 app.post("/admin/products", isAdmin, async (req, res) => {
@@ -239,7 +257,7 @@ app.delete("/admin/product/:id", isAdmin, async(req, res) => {
 app.get("/admin/product/:id/edit", async(req, res) => {
   let {id} = req.params;
   const product = await Product.findById(id);
-  res.render("admin/edit.ejs", { product });
+  res.render("admin/products/edit.ejs", { product });
 })
 
 app.patch("/admin/product/:id", async(req, res) => {
@@ -258,6 +276,22 @@ app.patch("/admin/product/:id", async(req, res) => {
   console.log(updatedProduct);
   res.redirect("/admin/products");
 })
+
+// view orders
+
+app.get("/admin/orders", async(req, res) => {
+  const orders = await Order.find({}).populate("customer");
+  res.render("admin/orders/index.ejs", {orders})
+})
+
+// view individual order
+
+app.get("/admin/orders/:id", async(req, res) => {
+  const order = await Order.findById(req.params.id).populate("customer").populate("product");
+  res.render("admin/orders/show.ejs", { order });
+})
+
+
 
 
 
