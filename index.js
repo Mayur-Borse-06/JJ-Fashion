@@ -10,6 +10,7 @@ const passport = require('passport');
 const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
+const ExpressError = require("./utils/ExpressError");
 
 const port = process.env.PORT || 3000;
 
@@ -329,6 +330,18 @@ app.get("/admin/customers", async(req, res) => {
 
   res.render("admin/customers/index.ejs", { customers });
 })
+
+app.get("/throw", (req, res) => {
+  throw new ExpressError(500, "Internal server error");
+})
+
+
+
+app.use((err, req, res, next) => {
+  let {statusCode = 500, message = "Internal Server Error"} = err;
+  console.log(statusCode, message);
+  res.render("error.ejs", {statusCode, message})
+});
 
 
 
