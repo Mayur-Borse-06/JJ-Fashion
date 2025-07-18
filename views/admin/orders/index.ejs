@@ -1,6 +1,14 @@
 <% layout('./layouts/adminboilerplate.ejs') %>
 
 <h3>Orders Mangement Panel</h3>
+<br>
+
+<div class="d-flex mb-4 justify-content-start gap-3 flex-wrap">
+  <a href="/admin/orders"><button type="button" class="btn btn-light">All</button></a>
+<a href="/admin/orders?status=Placed"><button type="button" class="btn btn-light">Placed</button></a>
+<a href="/admin/orders?status=Processing"><button type="button" class="btn btn-light">Processing</button></a>
+<a href="/admin/orders?status=Delivered"><button type="button" class="btn btn-light">Delivered</button></a>
+</div>
 
 <div class="table-responsive">
     <table class="table">
@@ -20,8 +28,21 @@
       <td><%= order.customer.name %></td>
       <td><%= order.totalAmount %></td>
       <td><%= order.status %></td>
-      <td><form action="/admin/orders/<%= order._id %>/accept"><button>Accept</button></form></td>
-      <td><form action="/admin/orders/<%= order._id %>"><button>View</button></form></td>
+      <td>
+        <% if(order.status === "Placed") { %>
+          <form action="/admin/orders/<%= order._id %>/accept?_method=PATCH" method="post"><button>Accept</button></form>
+          <% } %>
+        <% if(order.status === "Processing") { %>
+          <form action="/admin/orders/<%= order._id %>/shipped?_method=PATCH" method="post"><button>Mark shipped</button></form>
+          <% } %>
+        <% if(order.status === "Shipped") { %>
+          <form action="/admin/orders/<%= order._id %>/delivered?_method=PATCH" method="post"><button>Mark delivered</button></form>
+          <% } %>
+        <% if(order.status === "Delivered") { %>
+          <i class="fa-solid fa-check fw-bold ms-5 fs-3"></i>
+          <% } %>
+      </td>
+      <td><form action="/admin/orders/<%= order._id %>" method="get"><button>View</button></form></td>
     </tr>
     <% } %>
   </tbody>

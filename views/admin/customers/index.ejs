@@ -1,0 +1,28 @@
+<% layout('./layouts/adminboilerplate.ejs') %>
+
+<h3>Customers</h3>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Email</th>
+      <th scope="col">Total Orders</th>
+      <th scope="col">Last Order</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for(customer of customers) { %>
+        <tr>
+            <td><%= customer.name %></td>
+            <td><%= customer.email %></td>
+            <td><%= customer.totalOrders %></td>
+            <% if (customer.lastOrder) { %>
+                <td><%= customer.lastOrder.orderedAt.toDateString() %></td>
+            <% } else { %>
+                <td>No orders</td>
+            <% } %>
+        </tr>
+    <% } %>
+  </tbody>
+</table>

@@ -76,7 +76,7 @@
       <td><%= recentOrder.customer.name %></td>
       <td><%= recentOrder.totalAmount %></td>
       <td><%= recentOrder.status %></td>
-      <td><button>Accept</button></td>
+      <td><form action="/admin/orders/<%= recentOrder._id %>/accept?_method=PATCH" method="post"><button>Accept</button></form></td>
     </tr>
     <% } %>
   </tbody>

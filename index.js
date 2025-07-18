@@ -87,7 +87,7 @@ app.post("/customer/login", passport.authenticate("local", {
   failureRedirect: "/customer/login",
 }), (req, res) => {
   if(req.user.isAdmin) {
-    res.redirect("/admin/products");
+    res.redirect("/admin/dashboard");
   } else {
     res.redirect("/");
   }
@@ -217,7 +217,7 @@ app.get("/admin/dashboard", async(req, res) => {
   const processingOrders = await Order.countDocuments({status: {$in: ["Shipped", "Processing"]}});
   const deliveredOrders = await Order.countDocuments({status: {$in: ["Delivered"]}});
 
-  const recentOrders = await Order.find({})
+  const recentOrders = await Order.find({status: "Placed"})
     .sort({orderedAt: -1}) // Descending time(latest order time)
     .limit(5)
     .populate("customer")
@@ -273,14 +273,18 @@ app.patch("/admin/product/:id", async(req, res) => {
     images: req.body.images,
     color: req.body.color,
   });
-  console.log(updatedProduct);
+
   res.redirect("/admin/products");
 })
+
 
 // view orders
 
 app.get("/admin/orders", async(req, res) => {
-  const orders = await Order.find({}).populate("customer");
+  const filter = req.query.status;  // Orders filtering
+  const query = filter ? {status: filter} : {}
+
+  const orders = await Order.find(query).populate("customer");
   res.render("admin/orders/index.ejs", {orders})
 })
 
@@ -291,6 +295,41 @@ app.get("/admin/orders/:id", async(req, res) => {
   res.render("admin/orders/show.ejs", { order });
 })
 
+// accept order
+
+app.patch("/admin/orders/:id/accept", async(req, res) => {
+  const order = await Order.findByIdAndUpdate(req.params.id, {status: "Processing"});
+  res.redirect("/admin/orders");
+})
+
+// mark as shipped
+
+app.patch("/admin/orders/:id/shipped", async(req, res) => {
+    const order = await Order.findByIdAndUpdate(req.params.id, {status: "Shipped"});
+    res.redirect("/admin/orders");
+})
+
+// mark as delivered
+
+app.patch("/admin/orders/:id/delivered", async(req, res) => {
+    const order = await Order.findByIdAndUpdate(req.params.id, {status: "Delivered"});
+    res.redirect("/admin/orders");
+})
+
+app.get("/admin/customers", async(req, res) => {
+  const customers = await Customer.find({isAdmin: {$ne: true}});
+
+  for(customer of customers) {
+    const count = await Order.countDocuments({customer: customer._id});
+    const lastOrder = await Order.findOne({customer: customer._id}).sort({orderedAt: -1})
+    customer.totalOrders = count;
+    customer.lastOrder = lastOrder ? lastOrder : null;
+    
+  }
+
+  res.render("admin/customers/index.ejs", { customers });
+})
+
 
 
 
@@ -298,5 +337,5 @@ app.get("/admin/orders/:id", async(req, res) => {
 
 
 app.listen(port, () => {
-    console.log("Server is now listening on port 3000");
+    console.log(`Server is now listening on port ${port}`);
 })
