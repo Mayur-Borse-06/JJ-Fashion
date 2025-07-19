@@ -343,7 +343,6 @@ app.use((req, res, next) => {
 
 app.use((err, req, res, next) => {
   let {statusCode = 500, message = "Internal Server Error"} = err;
-  console.log(statusCode, message);
   res.render("error.ejs", {statusCode, message})
 });
 
