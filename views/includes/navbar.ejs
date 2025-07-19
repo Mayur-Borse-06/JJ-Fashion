@@ -1,41 +1,49 @@
 <header>
-  <h1>JJ Fashion</h1>
-  <nav>
-    <ul>
-      <% if (!currentUser) { %>
-      <!-- Guest Navbar -->
-      <li><a href="/">Home</a></li>
-      <li><a href="/">Shop</a></li>
-      <li><a href="/customer/login">Login</a></li>
-      <li>
-        <a href="/customer/cart">
-          <i
-            class="fa-solid fa-cart-shopping"
-            style="color: rgb(235, 235, 235)"
-          ></i>
-        </a>
-      </li>
-      <% } else if (currentUser.isAdmin) { %>
-      <!-- Admin Navbar -->
-      <li><a href="/admin/dashboard">Dashboard</a></li>
-      <li><a href="/admin/products">All Products</a></li>
-      <li><a href="/admin/products/new">Add Product</a></li>
-      <li><a href="/customer/logout">Logout</a></li>
-      <% } else { %>
-      <!-- Customer Navbar -->
-      <li><a href="/">Home</a></li>
-      <li><a href="/">Shop</a></li>
-      <li><a href="/orders">Orders</a></li>
-      <li><a href="/customer/logout">Logout</a></li>
-      <li>
-        <a href="/customer/cart">
-          <i
-            class="fa-solid fa-cart-shopping"
-            style="color: rgb(235, 235, 235)"
-          ></i>
-        </a>
-      </li>
-      <% } %>
-    </ul>
+  <nav class="navbar navbar-expand-sm navbar-dark bg-custom-dark">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="/">JJ Fashion</a>
+
+      <!-- Toggle button for mobile -->
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" style="width: 50px;">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Collapsible content -->
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav ms-auto">
+          <% if (!currentUser) { %>
+            <!-- Guest Navbar -->
+             
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">Shop</a></li>
+            <li class="nav-item"><a class="nav-link" href="/customer/login">Login</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/customer/cart">
+                <i class="fa-solid fa-cart-shopping" style="color: rgb(235, 235, 235)"></i>
+              </a>
+            </li>
+
+          <% } else if (currentUser.isAdmin) { %>
+            <!-- Admin Navbar -->
+            <li class="nav-item"><a class="nav-link" href="/admin/dashboard">Dashboard</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/products">All Products</a></li>
+            <li class="nav-item"><a class="nav-link" href="/admin/products/new">Add Product</a></li>
+            <li class="nav-item"><a class="nav-link" href="/customer/logout">Logout</a></li>
+
+          <% } else { %>
+            <!-- Customer Navbar -->
+            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/">Shop</a></li>
+            <li class="nav-item"><a class="nav-link" href="/orders">Orders</a></li>
+            <li class="nav-item"><a class="nav-link" href="/customer/logout">Logout</a></li>
+            <li class="nav-item">
+              <a class="nav-link" href="/customer/cart">
+                <i class="fa-solid fa-cart-shopping" style="color: rgb(235, 235, 235)"></i>
+              </a>
+            </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
   </nav>
 </header>

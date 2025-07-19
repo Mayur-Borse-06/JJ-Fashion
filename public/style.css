@@ -10,25 +10,6 @@ body {
   color: #333;
 }
 
-header {
-  background-color: #111;
-  color: white;
-  padding: 1rem 2rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-nav ul {
-  list-style: none;
-  display: flex;
-  gap: 1.5rem;
-}
-
-nav a {
-  color: white;
-  text-decoration: none;
-}
 
 .hero {
   width: 100vw;
@@ -161,12 +142,31 @@ body {
   padding: 0;
 }
 
-header {
+/* header {
   background-color: #111;
   color: #fff;
   padding: 1rem;
   text-align: center;
+} */
+
+.bg-custom-dark {
+  background-color: #111 !important;
 }
+
+.navbar {
+  padding-top: 1.2rem;
+  padding-bottom: 1.2rem;
+}
+
+.navbar-nav .nav-link {
+  font-size: 1.1rem;   /* ya 1.1rem agar aur bada chahiye */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-weight: 700;
+  color: rgb(228, 227, 227);     /* thoda bold feel dene ke liye */
+}
+
+
 
 .form-container {
   background-color: #fff;

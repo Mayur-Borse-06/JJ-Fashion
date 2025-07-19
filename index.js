@@ -187,7 +187,8 @@ app.post("/cart/:id/add", async(req, res) => {
 })
 
 app.get("/customer/cart", async(req, res) => {
-  const productIds = req.session.cart.map((item) => {
+  if(req.session.cart) {
+      const productIds = req.session.cart.map((item) => {
     return item.productId;
   })
   const products = await Product.find({_id: {$in: productIds}});
@@ -203,6 +204,9 @@ app.get("/customer/cart", async(req, res) => {
   })
 
   res.render("cart.ejs", { cartItems });
+  } else {
+    throw new ExpressError(400, "You have not added any items in the cart");
+  }
 
 })
 
@@ -331,9 +335,9 @@ app.get("/admin/customers", async(req, res) => {
   res.render("admin/customers/index.ejs", { customers });
 })
 
-app.get("/throw", (req, res) => {
-  throw new ExpressError(500, "Internal server error");
-})
+app.use((req, res, next) => {
+  throw new ExpressError(404, "Page not found");
+});
 
 
 
