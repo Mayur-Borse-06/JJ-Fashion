@@ -11,6 +11,8 @@ const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const ExpressError = require("./utils/ExpressError");
+const puppeteer = require('puppeteer');
+const ejs = require('ejs');
 
 const port = process.env.PORT || 3000;
 
@@ -334,6 +336,40 @@ app.get("/admin/customers", async(req, res) => {
 
   res.render("admin/customers/index.ejs", { customers });
 })
+
+// Invoice 
+
+app.get("/invoice/:orderId", async(req, res) => {
+  let {orderId} = req.params;
+  const order = await Order.findById(orderId).populate("customer").populate("product");
+  console.log(order);
+  const subtotal = order.product.price * order.quantity;
+  const gstAmount = subtotal * 0.05; 
+  const total = subtotal + gstAmount;
+  const html = await ejs.renderFile(path.join(__dirname, "views/layouts/invoiceTemplate.ejs"), { order, subtotal, gstAmount, total });
+
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+  await page.setContent(html, {waitUntil: 'networkidle0'})
+  const pdfBuffer = await page.pdf({
+    format: 'A4',
+    printBackground: true,
+  });
+
+  await browser.close();
+
+  res.set({
+  'Content-Type': 'application/pdf',
+  'Content-Disposition': `attachment`,
+});
+
+  res.send(pdfBuffer);
+})
+
+
+
+
+
 
 app.use((req, res, next) => {
   throw new ExpressError(404, "Page not found");
