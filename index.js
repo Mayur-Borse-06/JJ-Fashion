@@ -11,7 +11,8 @@ const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const ExpressError = require("./utils/ExpressError");
-const puppeteer = require('puppeteer');
+const puppeteer = require('puppeteer-core');
+const chromium = require('chrome-aws-lambda');
 const ejs = require('ejs');
 
 const port = process.env.PORT || 3000;
@@ -348,7 +349,12 @@ app.get("/invoice/:orderId", async(req, res) => {
   const total = subtotal + gstAmount;
   const html = await ejs.renderFile(path.join(__dirname, "views/layouts/invoiceTemplate.ejs"), { order, subtotal, gstAmount, total });
 
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+  args: chromium.args,
+  defaultViewport: chromium.defaultViewport,
+  executablePath: await chromium.executablePath,
+  headless: chromium.headless,
+});
   const page = await browser.newPage();
   await page.setContent(html, {waitUntil: 'networkidle0'})
   const pdfBuffer = await page.pdf({
