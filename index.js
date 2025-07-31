@@ -11,8 +11,7 @@ const LocalStratergy = require('passport-local');
 const ejsMate = require('ejs-mate');
 const methodOverride = require('method-override');
 const ExpressError = require("./utils/ExpressError");
-const puppeteer = require('puppeteer-core');
-const chromium = require('chrome-aws-lambda');
+const pdf = require("html-pdf-node");
 const ejs = require('ejs');
 
 const port = process.env.PORT || 3000;
@@ -340,37 +339,33 @@ app.get("/admin/customers", async(req, res) => {
 
 // Invoice 
 
-app.get("/invoice/:orderId", async(req, res) => {
-  let {orderId} = req.params;
+
+app.get("/invoice/:orderId", async (req, res) => {
+  let { orderId } = req.params;
   const order = await Order.findById(orderId).populate("customer").populate("product");
-  console.log(order);
+
   const subtotal = order.product.price * order.quantity;
-  const gstAmount = subtotal * 0.05; 
+  const gstAmount = subtotal * 0.05;
   const total = subtotal + gstAmount;
-  const html = await ejs.renderFile(path.join(__dirname, "views/layouts/invoiceTemplate.ejs"), { order, subtotal, gstAmount, total });
 
-  const browser = await puppeteer.launch({
-  args: chromium.args,
-  defaultViewport: chromium.defaultViewport,
-  executablePath: await chromium.executablePath,
-  headless: chromium.headless,
-});
-  const page = await browser.newPage();
-  await page.setContent(html, {waitUntil: 'networkidle0'})
-  const pdfBuffer = await page.pdf({
-    format: 'A4',
-    printBackground: true,
+  const html = await ejs.renderFile(
+    path.join(__dirname, "views/layouts/invoiceTemplate.ejs"),
+    { order, subtotal, gstAmount, total }
+  );
+
+  let file = { content: html };
+
+  pdf.generatePdf(file, { format: "A4" }).then((pdfBuffer) => {
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': 'attachment; filename=invoice.pdf',
+    });
+    res.send(pdfBuffer);
+  }).catch((err) => {
+    console.error("PDF Generation Error:", err);
+    res.status(500).send("Error generating PDF");
   });
-
-  await browser.close();
-
-  res.set({
-  'Content-Type': 'application/pdf',
-  'Content-Disposition': `attachment`,
 });
-
-  res.send(pdfBuffer);
-})
 
 
 
