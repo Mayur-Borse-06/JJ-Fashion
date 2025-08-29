@@ -368,12 +368,10 @@ app.get("/invoice/:orderId", async (req, res) => {
 });
 
 
-// Agar koi bhi route match na ho to ye chalega
 app.all("*", (req, res, next) => {
   next(new ExpressError(404, "Page not found"));
 });
 
-// Error handling middleware (last me hamesha)
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Internal Server Error" } = err;
   res.status(statusCode).render("error.ejs", { statusCode, message });
