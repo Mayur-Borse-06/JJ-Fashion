@@ -216,7 +216,7 @@ app.get("/customer/cart", async(req, res) => {
 
 // Main dashboard
 
-app.get("/admin/dashboard", async(req, res) => {
+app.get("/admin/dashboard", isAdmin, async(req, res) => {
   const orders = await Order.find({});
   const totalSales = orders.reduce((acc, order) => acc + order.totalAmount, 0);
   const totalOrders = await Order.countDocuments();
@@ -261,13 +261,13 @@ app.delete("/admin/product/:id", isAdmin, async(req, res) => {
 
 // Edit Product
 
-app.get("/admin/product/:id/edit", async(req, res) => {
+app.get("/admin/product/:id/edit", isAdmin, async(req, res) => {
   let {id} = req.params;
   const product = await Product.findById(id);
   res.render("admin/products/edit.ejs", { product });
 })
 
-app.patch("/admin/product/:id", async(req, res) => {
+app.patch("/admin/product/:id", isAdmin, async(req, res) => {
   let {id} = req.params;
   const updatedProduct = await Product.findByIdAndUpdate(id, {
     name: req.body.name,
@@ -287,7 +287,7 @@ app.patch("/admin/product/:id", async(req, res) => {
 
 // view orders
 
-app.get("/admin/orders", async(req, res) => {
+app.get("/admin/orders", isAdmin, async(req, res) => {
   const filter = req.query.status;  // Orders filtering
   const query = filter ? {status: filter} : {}
 
@@ -297,33 +297,33 @@ app.get("/admin/orders", async(req, res) => {
 
 // view individual order
 
-app.get("/admin/orders/:id", async(req, res) => {
+app.get("/admin/orders/:id", isAdmin, async(req, res) => {
   const order = await Order.findById(req.params.id).populate("customer").populate("product");
   res.render("admin/orders/show.ejs", { order });
 })
 
 // accept order
 
-app.patch("/admin/orders/:id/accept", async(req, res) => {
+app.patch("/admin/orders/:id/accept", isAdmin, async(req, res) => {
   const order = await Order.findByIdAndUpdate(req.params.id, {status: "Processing"});
   res.redirect("/admin/orders");
 })
 
 // mark as shipped
 
-app.patch("/admin/orders/:id/shipped", async(req, res) => {
+app.patch("/admin/orders/:id/shipped", isAdmin, async(req, res) => {
     const order = await Order.findByIdAndUpdate(req.params.id, {status: "Shipped"});
     res.redirect("/admin/orders");
 })
 
 // mark as delivered
 
-app.patch("/admin/orders/:id/delivered", async(req, res) => {
+app.patch("/admin/orders/:id/delivered", isAdmin, async(req, res) => {
     const order = await Order.findByIdAndUpdate(req.params.id, {status: "Delivered"});
     res.redirect("/admin/orders");
 })
 
-app.get("/admin/customers", async(req, res) => {
+app.get("/admin/customers", isAdmin, async(req, res) => {
   const customers = await Customer.find({isAdmin: {$ne: true}});
 
   for(customer of customers) {
@@ -368,20 +368,19 @@ app.get("/invoice/:orderId", async (req, res) => {
 });
 
 
-
-
-
-
-app.use((req, res, next) => {
-  throw new ExpressError(404, "Page not found");
+// Agar koi bhi route match na ho to ye chalega
+app.all("*", (req, res, next) => {
+  next(new ExpressError(404, "Page not found"));
 });
 
-
-
+// Error handling middleware (last me hamesha)
 app.use((err, req, res, next) => {
-  let {statusCode = 500, message = "Internal Server Error"} = err;
-  res.render("error.ejs", {statusCode, message})
+  let { statusCode = 500, message = "Internal Server Error" } = err;
+  res.status(statusCode).render("error.ejs", { statusCode, message });
 });
+
+
+
 
 
 
