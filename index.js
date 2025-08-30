@@ -188,7 +188,7 @@ app.post("/cart/:id/add", async(req, res) => {
   res.redirect("/");
 })
 
-app.get("/customer/cart", async(req, res) => {
+app.get("/customer/cart", async(req, res, next) => {
   if(req.session.cart) {
       const productIds = req.session.cart.map((item) => {
     return item.productId;
@@ -207,7 +207,7 @@ app.get("/customer/cart", async(req, res) => {
 
   res.render("cart.ejs", { cartItems });
   } else {
-    throw new ExpressError(400, "You have not added any items in the cart");
+    next(new ExpressError(400, "You have not added any items in the cart"));
   }
 
 })
